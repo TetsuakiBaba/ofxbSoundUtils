@@ -10,6 +10,7 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     sound_utils.update();
+    
 }
 
 //--------------------------------------------------------------
@@ -22,3 +23,16 @@ void ofApp::draw(){
 
 }
 
+
+void ofApp::keyPressed(int key)
+{
+    if(key =='s'){
+        ofPixels pixels;
+        ofImage img;
+        sound_utils.fbo_spectrogram.readToPixels(pixels);
+        img.setFromPixels(pixels);
+        string filename;
+        filename = ofGetTimestampString()+".png";
+        img.save(filename,OF_IMAGE_QUALITY_BEST);
+    }
+}
