@@ -46,7 +46,7 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
-			<key>1EDF92602DA3EA14656D93D4</key>
+			<key>19D0B8FAE889D2DEC3BBA358</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
@@ -55,9 +55,9 @@
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
-				<string>FFT.h</string>
+				<string>bFFT.h</string>
 				<key>path</key>
-				<string>../../../../addons/ofxbSoundUtils/src/FFT.h</string>
+				<string>../../../../addons/ofxbSoundUtils/src/bFFT.h</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -65,8 +65,8 @@
 			<dict>
 				<key>children</key>
 				<array>
-					<string>A7B983ED5C192154B71E2C2A</string>
-					<string>1EDF92602DA3EA14656D93D4</string>
+					<string>0AD991D96CC97F3BB55D9266</string>
+					<string>19D0B8FAE889D2DEC3BBA358</string>
 					<string>5211BD8CAB86EF58BB2FE8A8</string>
 					<string>6E09BF7A27BE2A5A901F469C</string>
 				</array>
@@ -90,14 +90,14 @@
 				<key>sourceTree</key>
 				<string>&lt;group&gt;</string>
 			</dict>
-			<key>E27C4C5200700D8AB032A15D</key>
+			<key>C906C7A81EEFAFA9AE6B08E9</key>
 			<dict>
 				<key>fileRef</key>
-				<string>A7B983ED5C192154B71E2C2A</string>
+				<string>0AD991D96CC97F3BB55D9266</string>
 				<key>isa</key>
 				<string>PBXBuildFile</string>
 			</dict>
-			<key>A7B983ED5C192154B71E2C2A</key>
+			<key>0AD991D96CC97F3BB55D9266</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
@@ -106,9 +106,9 @@
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
-				<string>FFT.cpp</string>
+				<string>bFFT.cpp</string>
 				<key>path</key>
-				<string>../../../../addons/ofxbSoundUtils/src/FFT.cpp</string>
+				<string>../../../../addons/ofxbSoundUtils/src/bFFT.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -3210,7 +3210,7 @@ fi
 				<array>
 					<string>E4B69E200A3A1BDC003C02F2</string>
 					<string>E4B69E210A3A1BDC003C02F2</string>
-					<string>E27C4C5200700D8AB032A15D</string>
+					<string>C906C7A81EEFAFA9AE6B08E9</string>
 					<string>6E5BFD09CC43D9ADA21E996B</string>
 				</array>
 				<key>isa</key>

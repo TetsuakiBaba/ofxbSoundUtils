@@ -25,6 +25,10 @@ void ofxbSoundUtils::drawSpectrum(int _x, int _y, int _w, int _h)
     }
 }
 
+void ofxbSoundUtils::drawSettings(int _x, int _y)
+{
+    ofDrawBitmapString(string_device_info, _x, _y);
+}
 
 
 void ofxbSoundUtils::drawSpectrogram(int _x, int _y, int _w, int _h)
@@ -32,7 +36,8 @@ void ofxbSoundUtils::drawSpectrogram(int _x, int _y, int _w, int _h)
     fbo_spectrogram.draw(_x,_y, _w, _h);
 }
 
-void ofxbSoundUtils::update()
+
+void ofxbSoundUtils::updateFbo()
 {
     fbo_spectrum_power.begin();
     {
@@ -41,7 +46,16 @@ void ofxbSoundUtils::update()
         ofSetColor(255);
         ofBeginShape();
         for( int i = 0; i < fft.spectrum.size(); i++ ){
-            ofVertex(i, bufsize/2-fft.spectrum[i].power);
+            float y = bufsize/2-fft.spectrum[i].power;
+            if( y >= fft.spectrum.size() ){
+                ofVertex(i, fft.spectrum.size()-1);
+            }
+            else if( y < 0 ){
+                ofVertex(i, 0);
+            }
+            else{
+                ofVertex(i, bufsize/2-fft.spectrum[i].power);
+            }
         }
         ofEndShape();
     }
@@ -75,18 +89,13 @@ void ofxbSoundUtils::update()
         }
     }
     
-    float max = -1000.0;
-    float min = 10000.0;
     fbo_spectrogram.begin();
     glBegin(GL_POINTS);
     for( int i = 0; i < framesize; i++ ){
         for( int j = 0; j < framesize; j++ ){
             float p = buf_spectrogram[i][j];
-            if( p > max )max = p;
-            if( p < min )min = p;
             if( loudness_type == OFXBSU_LOUDNESS_TYPE_POWER) p = ofMap(p, 0.0, 10.0, 0, 255);
             if( loudness_type == OFXBSU_LOUDNESS_TYPE_DB) p = ofMap(p, -20, 20, 0, 255);
-
             if( p > 255 )p = 255;
             if( p < 0 ) p = 0;
             ofSetColor(p);
@@ -95,13 +104,21 @@ void ofxbSoundUtils::update()
     }
     glEnd();
     fbo_spectrogram.end();
-    
+}
+
+void ofxbSoundUtils::update()
+{
+    if( count_should_be_updated <= 0 ){
+        return;
+    }
+    updateFbo();
+    count_should_be_updated--;
    
 }
-void ofxbSoundUtils::setup(int _bufsize)
+
+
+void ofxbSoundUtils::setup(int _bufsize, int _sampling_rate, bool _use_output)
 {
-    int number_output_channels = 0;
-    int number_input_channels  = 1;
     auto devices = soundStream.getDeviceList();
     for( int i = 0; i < devices.size(); i++ ){
         if( devices[i].isDefaultInput ){
@@ -111,15 +128,32 @@ void ofxbSoundUtils::setup(int _bufsize)
             for( int j = 0; j < devices[i].sampleRates.size(); j++){
                 string_device_info += ofToString(devices[i].sampleRates[j])+",";
             }
-            string_device_info += "\n";
+            if( _sampling_rate == 0 ){
+                settings.sampleRate = devices[i].sampleRates[0];
+            }
+            else{
+                settings.sampleRate = _sampling_rate;
+            }
+            settings.numInputChannels = devices[i].inputChannels;
+            
         }
+        if( devices[i].isDefaultOutput && _use_output ){
+            settings.setOutDevice(devices[i]);
+            settings.numOutputChannels = devices[i].outputChannels;
+            string_device_info += "\nOutput Device: "+devices[i].name+"\n";
+            string_device_info += " - Configurable Sampling Rate: ";
+            for( int j = 0; j < devices[i].sampleRates.size(); j++){
+                string_device_info += ofToString(devices[i].sampleRates[j])+",";
+            }
+        }
+        
     }
-    string_device_info += "Sampling Rate: " + ofToString(settings.sampleRate) +"\n";
-    settings.setInListener(this);
-    settings.numOutputChannels = 0;
-    settings.numInputChannels = number_input_channels;
+    string_device_info += "\n";
+    string_device_info += "Sampling Rate: " + ofToString(settings.sampleRate);
+    string_device_info += ", Buffer Size: " + ofToString(_bufsize);
+    string_device_info += ", Callback Freq: " + ofToString(settings.sampleRate/_bufsize);
+    
     settings.bufferSize = bufsize = _bufsize;
-    soundStream.setup(settings);
     
     buf_spectrogram = new float*[_bufsize/2];
     for( int i = 0; i < _bufsize/2; i++){
@@ -131,6 +165,23 @@ void ofxbSoundUtils::setup(int _bufsize)
     fbo_spectrogram.allocate(_bufsize/2, _bufsize/2);
     sound = new float[_bufsize];
     loudness_type = OFXBSU_LOUDNESS_TYPE_POWER;
+    
+    settings.setInListener(this);
+    soundStream.setup(settings);
+    count_should_be_updated = 0;
+}
+
+void ofxbSoundUtils::setup(int _bufsize, int _sampling_rate)
+{
+    setup(_bufsize, _sampling_rate, false);
+}
+void ofxbSoundUtils::setup(int _bufsize, bool _use_output)
+{
+    setup(_bufsize, 0, _use_output);
+}
+void ofxbSoundUtils::setup(int _bufsize)
+{
+    setup(_bufsize, false);
 }
 
 void ofxbSoundUtils::audioIn(ofSoundBuffer &input)
@@ -140,6 +191,10 @@ void ofxbSoundUtils::audioIn(ofSoundBuffer &input)
     }
     
     fft.update(sound);
-    
+    count_should_be_updated++;
 }
 
+
+void ofxbSoundUtils::audioOut(ofSoundBuffer &output)
+{
+}
