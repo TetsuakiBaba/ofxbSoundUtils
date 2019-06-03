@@ -23,10 +23,10 @@ public:
 
     void drawSpectrum(int _x, int _y, int _w, int _h);
     void drawSpectrogram(int _x, int _y, int _w, int _h);
+    ofPixels getPixelsFromSpectrogram();
     void updateFbo();
     void drawSettings(int _x, int _y);
-
-
+    
     ofSoundStream soundStream;
     ofSoundStreamSettings settings;
     float **buf_spectrogram;

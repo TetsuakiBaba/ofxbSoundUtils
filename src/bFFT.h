@@ -34,12 +34,15 @@ class bFFT {
     // get step size of frequency
     float getFreqStep(int sampling_rate, int buffer_size);
     float getFreqStep();
+    float getPower(float _hz);
+    double getDFTPower(float _hz);
   
     int bufsize,sampling_rate;
     float *magnitude;  // 振幅
     float *phase;      //
     float *power;      // 振幅×振幅
     float avg_power;
+    float *sound;
     vector<Spectrum>spectrum;
 };
 

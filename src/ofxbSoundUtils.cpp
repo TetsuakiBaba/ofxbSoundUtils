@@ -30,6 +30,13 @@ void ofxbSoundUtils::drawSettings(int _x, int _y)
     ofDrawBitmapString(string_device_info, _x, _y);
 }
 
+ofPixels ofxbSoundUtils::getPixelsFromSpectrogram()
+{
+    ofPixels p;
+    fbo_spectrogram.readToPixels(p);
+    return p;
+}
+
 
 void ofxbSoundUtils::drawSpectrogram(int _x, int _y, int _w, int _h)
 {
@@ -190,7 +197,7 @@ void ofxbSoundUtils::audioIn(ofSoundBuffer &input)
         sound[i] = input.getSample(i,0);
     }
     
-    fft.update(sound);
+    fft.update(sound);    
     count_should_be_updated++;
 }
 

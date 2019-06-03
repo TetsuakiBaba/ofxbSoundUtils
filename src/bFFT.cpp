@@ -415,6 +415,7 @@ void bFFT::setup(int _bufsize, int _sampling_rate)
     phase = new float[bufsize];
     power = new float[bufsize];
     spectrum.resize(bufsize/2);
+    sound = new float[bufsize];
 
 }
 
@@ -428,6 +429,7 @@ void bFFT::update(float *_input_sound)
                    &phase[0],
                    &power[0],
                    &avg_power);
+    memcpy(sound, _input_sound, bufsize);
 }
 /* Calculate the power spectrum */
 void bFFT::powerSpectrum(int start, int half, float *data, int windowSize,float *magnitude,float *phase, float *power, float *avg_power) {
@@ -516,4 +518,30 @@ float bFFT::getFreqStep(int sampling_rate, int buffer_size)
 float bFFT::getFreqStep()
 {
     return sampling_rate/(float)bufsize;
+}
+
+float bFFT::getPower(float _hz)
+{
+    for( int i = 0 ; i < spectrum.size()-1; i++){
+        if( spectrum[i].Hz <= _hz &&
+           _hz < spectrum[i+1].Hz){
+            return (spectrum[i].power+spectrum[i+1].power)/2.0;
+        }
+    }
+    return -1;
+}
+
+double bFFT::getDFTPower(float _hz)
+{
+    double freq = _hz;
+    double dw = freq*2*M_PI*(1.0/(float)sampling_rate);
+    double w = 0.0;
+    double sum_real = 0.0;
+    double sum_imag = 0.0;
+    for( int i = 0; i < bufsize; i++ ){
+        sum_real = sum_real + cos(w)*sound[i];
+        sum_imag = sum_imag + (-1)*sin(w)*sound[i];
+        w = w + dw;
+    }
+    return (pow(sum_real,2)+pow(sum_imag,2));
 }
