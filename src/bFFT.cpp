@@ -450,6 +450,7 @@ void bFFT::powerSpectrum(int start, int half, float *data, int windowSize,float 
     bFFT_WindowFunc(windowFunc, windowSize, in_real);
     bFFT_RealFFT(windowSize, in_real, out_real, out_img);
     
+    max_power = 0.0;
     for (i = 0; i < half; i++) {
         /* compute power */
         power[i] = out_real[i]*out_real[i] + out_img[i]*out_img[i];
@@ -458,6 +459,7 @@ void bFFT::powerSpectrum(int start, int half, float *data, int windowSize,float 
         magnitude[i] = 2.0*sqrt(power[i]);
         phase[i] = atan2(out_img[i],out_real[i]);
         
+        if( max_power < power[i] )max_power = power[i];
         spectrum[i].power = power[i];
         spectrum[i].db    = 10*log10(power[i]);
         spectrum[i].Hz = getFreqStep(sampling_rate, bufsize)*i;

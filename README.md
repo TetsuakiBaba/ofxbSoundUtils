@@ -1,4 +1,5 @@
 # ofxbSoundUtils
+![Thumnbnail](thumbnail.gif)
 It makes it easier to get FFT and Spetrogram result. If you want to use sound output, please be sure to put audioOut function on ofApp.h as audio callback function.
 
 ## Usage

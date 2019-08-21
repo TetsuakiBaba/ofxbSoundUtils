@@ -24,6 +24,7 @@ void ofApp::draw(){
 
 void ofApp::keyPressed(int key)
 {
+    // Saves spectrogram as a png file.
     if(key =='s'){
         ofPixels pixels;
         ofImage img;

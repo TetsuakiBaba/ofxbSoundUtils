@@ -43,6 +43,7 @@ class bFFT {
     float *power;      // 振幅×振幅
     float avg_power;
     float *sound;
+    float max_power;
     vector<Spectrum>spectrum;
 };
 
